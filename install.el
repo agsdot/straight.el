@@ -97,16 +97,21 @@
     ;; forked straight.el and made incompatible divergent changes to
     ;; the recipe specification, and forgot to update which repository
     ;; their init-file downloaded install.el from).
+    (message "checking lockfiles")
+    (message "profiles are %S" straight-profiles)
     (dolist (lockfile-name (mapcar #'cdr straight-profiles))
       (let ((lockfile-path (concat straight-install-dir
                                    "straight/versions/"
                                    lockfile-name)))
+        (message "checking %S at %S" lockfile-name lockfile-path)
         (when (file-exists-p lockfile-path)
+          (message "file exists")
           (condition-case nil
               (with-temp-buffer
                 (insert-file-contents-literally lockfile-path)
                 (read (current-buffer))
                 (let ((alleged-version (read (current-buffer))))
+                  (message "version known is %S, alleged is %S" version alleged-version)
                   (cond
                    (version
                     (unless (eq alleged-version version)
